@@ -47,6 +47,7 @@ bool Memory::Init() {
 
 	Client = GetModule(ProcId, "client.dll");
 	Engine = GetModule(ProcId, "engine.dll");
+	Browser = GetModule(ProcId, "serverbrowser.dll");
 
 	ClientState = Read<DWORD>(Engine + hazedumper::signatures::dwClientState);
 

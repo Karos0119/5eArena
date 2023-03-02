@@ -1,5 +1,7 @@
 #pragma once
 #include "aimbot.hpp"
+#include <thread>
+#include <iostream>
 
 void VectorAngles(const float* forward, float* angles)
 {
@@ -131,6 +133,9 @@ void AimBot::Aim(int SmoothAmt)
 
 void AimBot::Trigger()
 {
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(90));
+
     int crosshair_id = Memory::Get().Read<int>(Memory::Get().Local + hazedumper::netvars::m_iCrosshairId);
 
     if (crosshair_id <= 0 || crosshair_id > 300)

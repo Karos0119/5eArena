@@ -8,7 +8,7 @@ public:
 	HANDLE Handle;
 	INT32  ProcId;
 	DWORD  Local;
-	DWORD  Client, Engine;
+	DWORD  Client, Engine, Browser;
 	DWORD  ClientState;
 
 	bool Init();

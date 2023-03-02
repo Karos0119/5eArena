@@ -68,13 +68,22 @@ DWORD WINAPI OnDllAttach(LPVOID base)
         Memory::Get().Init();
     }*/
 
+    while (!Memory::Get().Browser)
+    {
+        Utils::Print("Waiting for serverbrowser.dll ");
+        Sleep(1000);
+        system("CLS");
+        Memory::Get().Init();
+    }
+
     system("CLS");
     Utils::Print("M5 trigger");
     Utils::Print("F5 aim");
     Utils::Print("F6 glow");
     Utils::Print("F7 hop");
     Utils::Print("F8 radar");
-    Utils::Print("F9 unload");
+    Utils::Print("F9 no flash");
+    Utils::Print("F10 unload");
 
 #if _DEBUG
     std::string proc_print = "CS:GO Process Id: " + std::to_string(Memory::Get().ProcId);
@@ -94,7 +103,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
    //GetClientRect(FindWindow(NULL, TEXT("Counter-Strike: Global Offensive - Direct3D 9")), &ModifiedGameWindow);
 
 
-    while (!(GetAsyncKeyState(VK_F9) & 1))
+    while (!(GetAsyncKeyState(VK_F10) & 1))
     {   
 
         static bool aimtoggle = false;
@@ -117,6 +126,11 @@ DWORD WINAPI OnDllAttach(LPVOID base)
             radartoggle = !radartoggle;
             Sleep(100);
         }
+        static bool flashtoggle = false;
+        if (GetAsyncKeyState(VK_F9) & 1) {
+            flashtoggle = !flashtoggle;
+            Sleep(100);
+        }
 
         Memory::Get().Local = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwLocalPlayer);
 
@@ -130,9 +144,16 @@ DWORD WINAPI OnDllAttach(LPVOID base)
             if (bhoptoggle)
                 Misc::Get().Bhop();
 
+            // aimbot
             if (GetAsyncKeyState(VK_LBUTTON) && aimtoggle)
                 AimBot::Get().Aim(AIM_SMOOTH);
         }
+
+        // antiflash
+        if (flashtoggle)
+            Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 100.f);
+        else
+            Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 255.f);
 
         // loop players
         for (int i = 1; i < 32; i++)
