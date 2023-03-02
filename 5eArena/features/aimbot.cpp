@@ -64,8 +64,16 @@ void AimBot::Init(DWORD Player)
 
 // Actual AimBot::Aim function is pasted
 // I'll re-write at some point
-void AimBot::Aim(int SmoothAmt)
+void AimBot::Aim()
 {
+	int SmoothAmt;
+
+	if (mSmoothAmt > 30)
+		SmoothAmt = 300;
+	else if (mSmoothAmt <= 0)
+		SmoothAmt = 1;
+	else
+		SmoothAmt = mSmoothAmt * 10;
 
 	Vector MyEyeLoc;
 	Vector EnemyBones;
@@ -134,7 +142,7 @@ void AimBot::Aim(int SmoothAmt)
 void AimBot::Trigger()
 {
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(90));
+	std::this_thread::sleep_for(std::chrono::milliseconds(trigger_delay));
 
     int crosshair_id = Memory::Get().Read<int>(Memory::Get().Local + hazedumper::netvars::m_iCrosshairId);
 

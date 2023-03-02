@@ -43,48 +43,26 @@ bool WorldToScreen(Vector pos, Vector& screen, view q, int windowWidth, int wind
     return true;
 }
 
-#define AIM_SMOOTH 100
-
 DWORD WINAPI OnDllAttach(LPVOID base)
 {
     Utils::OpenConsole();
 
+    Utils::ResizeConsole(350, 300);
+
     if (!Utils::GetPid("csgo.exe"))
-        Utils::Print("Waiting for CS:GO. ");
-    
-    /*if (!Utils::GetPid("DiscordCanary.exe") && !Utils::GetPid("Discord.exe")) {
-        Utils::Print("This will only work if injected into discord. ");
-        FreeLibraryAndExitThread(static_cast<HMODULE>(base), 0);
-        return 0;
-    }*/
+        Utils::Print("Waiting for CS:GO");
 
     while (!Utils::GetPid("csgo.exe")) Sleep(100);
 
     Memory::Get().Init();
 
-   /* while (!Memory::Get().Client || !Memory::Get().Engine) {
-        Utils::Print("Unable to find client/engine module. Retrying in 1 second.");
-        Sleep(1000);
-        Memory::Get().Init();
-    }*/
-
     while (!Memory::Get().Browser)
     {
-        Utils::Print("Waiting for serverbrowser.dll ");
+        Utils::Print("Waiting for serverbrowser.dll");
         Sleep(1000);
         system("CLS");
         Memory::Get().Init();
     }
-
-    system("CLS");
-    Utils::Print("M5 trigger");
-    Utils::Print("F5 aim");
-    Utils::Print("F6 glow");
-    Utils::Print("F7 hop");
-    Utils::Print("F8 radar");
-    Utils::Print("F9 no flash");
-    Utils::Print("F10 unload");
-
 #if _DEBUG
     std::string proc_print = "CS:GO Process Id: " + std::to_string(Memory::Get().ProcId);
     Utils::Print(proc_print.c_str(), true);
@@ -98,38 +76,81 @@ DWORD WINAPI OnDllAttach(LPVOID base)
     printf("[DEBUG] Handle: %p", Memory::Get().Handle);
 #endif
 
-   //RECT GameWindow, ModifiedGameWindow;
-   //GetWindowRect(FindWindow(NULL, TEXT("Counter-Strike: Global Offensive - Direct3D 9")), &GameWindow);
-   //GetClientRect(FindWindow(NULL, TEXT("Counter-Strike: Global Offensive - Direct3D 9")), &ModifiedGameWindow);
-
-
     while (!(GetAsyncKeyState(VK_F10) & 1))
     {   
-
-        static bool aimtoggle = false;
-        if (GetAsyncKeyState(VK_F5) & 1) {
+        if (GetAsyncKeyState(VK_F1) & 1)
+        {
+            Sleep(100);
+            AimBot::Get().mSmoothAmt--;
+            shouldupdate = !shouldupdate;
+        }
+        else if (GetAsyncKeyState(VK_F2) & 1)
+        {
+            Sleep(100);
+            AimBot::Get().mSmoothAmt++;
+            shouldupdate = !shouldupdate;
+        }
+        else if (GetAsyncKeyState(VK_F3) & 1)
+        {
+            Sleep(100);
+            AimBot::Get().trigger_delay -= 5;
+            shouldupdate = !shouldupdate;
+        }
+        else if (GetAsyncKeyState(VK_F4) & 1)
+        {
+            Sleep(100);
+            AimBot::Get().trigger_delay += 5;
+            shouldupdate = !shouldupdate;
+        }
+        else if (GetAsyncKeyState(VK_F5) & 1) 
+        {
+            Sleep(100);
             aimtoggle = !aimtoggle;
-            Sleep(100);
+            shouldupdate = !shouldupdate;
         }
-        static bool glowtoggle = false;
-        if (GetAsyncKeyState(VK_F6) & 1) {
+        else if (GetAsyncKeyState(VK_F6) & 1) 
+        {
+            Sleep(100);
             glowtoggle = !glowtoggle;
-            Sleep(100);
+            shouldupdate = !shouldupdate;
         }
-        static bool bhoptoggle = false;
-        if (GetAsyncKeyState(VK_F7) & 1) {
+        else if (GetAsyncKeyState(VK_F7) & 1) 
+        {
+            Sleep(100);
             bhoptoggle = !bhoptoggle;
-            Sleep(100);
+            shouldupdate = !shouldupdate;
         }
-        static bool radartoggle = false;
-        if (GetAsyncKeyState(VK_F8) & 1) {
+        else if (GetAsyncKeyState(VK_F8) & 1) 
+        {
+            Sleep(100);
             radartoggle = !radartoggle;
-            Sleep(100);
+            shouldupdate = !shouldupdate;
         }
-        static bool flashtoggle = false;
-        if (GetAsyncKeyState(VK_F9) & 1) {
-            flashtoggle = !flashtoggle;
+        else if (GetAsyncKeyState(VK_F9) & 1) 
+        {
             Sleep(100);
+            flashtoggle = !flashtoggle;
+            shouldupdate = !shouldupdate;
+        }
+
+        if (shouldupdate)
+        {
+            Sleep(100);
+            system("CLS");
+            printf("M5 trigger\n");
+            printf("F1 decrease aim smooth\n");
+            printf("smooth: %i\n", AimBot::Get().mSmoothAmt);
+            printf("F2 increase aim smooth\n");
+            printf("F3 decrease trigger delay\n");
+            printf("delay: %i\n", AimBot::Get().trigger_delay);
+            printf("F4 increase trigger delay\n");
+            printf("F5 aim         [%s]\n", aimtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+            printf("F6 glow        [%s]\n", glowtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+            printf("F7 bhop        [%s]\n", bhoptoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+            printf("F8 radar       [%s]\n", radartoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+            printf("F9 ~half flash [%s]\n", flashtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+            printf("F10 unload\n");
+            shouldupdate = !shouldupdate;
         }
 
         Memory::Get().Local = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwLocalPlayer);
@@ -146,7 +167,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 
             // aimbot
             if (GetAsyncKeyState(VK_LBUTTON) && aimtoggle)
-                AimBot::Get().Aim(AIM_SMOOTH);
+                AimBot::Get().Aim();
         }
 
         // antiflash

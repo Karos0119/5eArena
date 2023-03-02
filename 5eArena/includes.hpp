@@ -7,6 +7,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <string>
+#include <iostream>
 
 #include "singleton.hpp"
 #include "vector.hpp"
@@ -18,8 +19,24 @@
 #include "features/aimbot.hpp"
 #include "features/visuals.hpp"
 
+static bool aimtoggle = false;
+static bool glowtoggle = false;
+static bool bhoptoggle = false;
+static bool radartoggle = false;
+static bool flashtoggle = false;
+static bool shouldupdate = true;
+static bool aimsettings = false;
+
 namespace Utils
 {
+	inline void ResizeConsole(int w, int h) {
+
+		HWND console = GetConsoleWindow();
+		RECT r;
+		GetWindowRect(console, &r);
+
+		MoveWindow(console, r.left, r.top, w, h, TRUE);
+	}
 	inline void OpenConsole()
 	{
 		AllocConsole();
