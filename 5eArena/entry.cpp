@@ -76,7 +76,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
     printf("[DEBUG] Handle: %p", Memory::Get().Handle);
 #endif
 
-    while (!(GetAsyncKeyState(VK_F10) & 1))
+    while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F10) & 1))
     {   
         if (GetAsyncKeyState(VK_F1) & 1)
         {
@@ -141,6 +141,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
             printf("F1 decrease aim smooth\n");
             printf("smooth: %i\n", AimBot::Get().mSmoothAmt);
             printf("F2 increase aim smooth\n");
+            printf("\n");
             printf("F3 decrease trigger delay\n");
             printf("delay: %i\n", AimBot::Get().trigger_delay);
             printf("F4 increase trigger delay\n");
@@ -152,6 +153,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
             printf("F10 unload\n");
             shouldupdate = !shouldupdate;
         }
+
 
         Memory::Get().Local = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwLocalPlayer);
 

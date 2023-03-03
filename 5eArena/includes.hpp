@@ -8,6 +8,9 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
+#include <conio.h>
+#include <windows.h>
+#include <cstdlib>
 
 #include "singleton.hpp"
 #include "vector.hpp"
