@@ -27,7 +27,7 @@ static bool glowtoggle = false;
 static bool bhoptoggle = false;
 static bool radartoggle = false;
 static bool flashtoggle = false;
-static bool shouldupdate = true;
+static bool shouldupdate = false;
 static bool aimsettings = false;
 
 namespace Utils

@@ -48,160 +48,153 @@ DWORD WINAPI OnDllAttach(LPVOID base)
     Utils::OpenConsole();
 
     Utils::ResizeConsole(350, 300);
-
-    if (!Utils::GetPid("csgo.exe"))
-        Utils::Print("Waiting for CS:GO");
-
-    while (!Utils::GetPid("csgo.exe")) Sleep(100);
-
-    Memory::Get().Init();
-
-    while (!Memory::Get().Browser)
+    while (!(GetAsyncKeyState(VK_F10) & 1))
     {
-        Utils::Print("Waiting for serverbrowser.dll");
-        Sleep(1000);
         system("CLS");
+        if (!Utils::GetPid("csgo.exe"))
+            Utils::Print("Waiting for CS:GO");
+
+        while (!Utils::GetPid("csgo.exe")) 
+            Sleep(100);
+
         Memory::Get().Init();
-    }
-#if _DEBUG
-    std::string proc_print = "CS:GO Process Id: " + std::to_string(Memory::Get().ProcId);
-    Utils::Print(proc_print.c_str(), true);
 
-    std::string client_print = "Client: " + std::to_string(Memory::Get().Client);
-    Utils::Print(client_print.c_str(), true);
-
-    std::string engine_print = "Engine: " + std::to_string(Memory::Get().Engine);
-    Utils::Print(engine_print.c_str(), true);
- 
-    printf("[DEBUG] Handle: %p", Memory::Get().Handle);
-#endif
-
-    while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F10) & 1))
-    {   
-        if (GetAsyncKeyState(VK_F1) & 1)
+        Utils::Print("Waiting for serverbrowser.dll");
+        while (!Memory::Get().Browser)
         {
-            Sleep(100);
-            AimBot::Get().mSmoothAmt--;
-            shouldupdate = !shouldupdate;
+           Sleep(1000);
+           Memory::Get().Init();
         }
-        else if (GetAsyncKeyState(VK_F2) & 1)
+        shouldupdate = !shouldupdate;
+        while (Utils::GetPid("csgo.exe"))
         {
-            Sleep(100);
-            AimBot::Get().mSmoothAmt++;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F3) & 1)
-        {
-            Sleep(100);
-            AimBot::Get().trigger_delay -= 5;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F4) & 1)
-        {
-            Sleep(100);
-            AimBot::Get().trigger_delay += 5;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F5) & 1) 
-        {
-            Sleep(100);
-            aimtoggle = !aimtoggle;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F6) & 1) 
-        {
-            Sleep(100);
-            glowtoggle = !glowtoggle;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F7) & 1) 
-        {
-            Sleep(100);
-            bhoptoggle = !bhoptoggle;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F8) & 1) 
-        {
-            Sleep(100);
-            radartoggle = !radartoggle;
-            shouldupdate = !shouldupdate;
-        }
-        else if (GetAsyncKeyState(VK_F9) & 1) 
-        {
-            Sleep(100);
-            flashtoggle = !flashtoggle;
-            shouldupdate = !shouldupdate;
-        }
+            if (GetAsyncKeyState(VK_F1) & 1)
+            {
+                Sleep(100);
+                AimBot::Get().mSmoothAmt--;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F2) & 1)
+            {
+                Sleep(100);
+                AimBot::Get().mSmoothAmt++;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F3) & 1)
+            {
+                Sleep(100);
+                AimBot::Get().trigger_delay -= 5;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F4) & 1)
+            {
+                Sleep(100);
+                AimBot::Get().trigger_delay += 5;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F5) & 1)
+            {
+                Sleep(100);
+                aimtoggle = !aimtoggle;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F6) & 1)
+            {
+                Sleep(100);
+                glowtoggle = !glowtoggle;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F7) & 1)
+            {
+                Sleep(100);
+                bhoptoggle = !bhoptoggle;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F8) & 1)
+            {
+                Sleep(100);
+                radartoggle = !radartoggle;
+                shouldupdate = !shouldupdate;
+            }
+            else if (GetAsyncKeyState(VK_F9) & 1)
+            {
+                Sleep(100);
+                flashtoggle = !flashtoggle;
+                shouldupdate = !shouldupdate;
+            }
 
-        if (shouldupdate)
-        {
-            Sleep(100);
-            system("CLS");
-            printf("M5 trigger\n");
-            printf("F1 decrease aim smooth\n");
-            printf("smooth: %i\n", AimBot::Get().mSmoothAmt);
-            printf("F2 increase aim smooth\n");
-            printf("\n");
-            printf("F3 decrease trigger delay\n");
-            printf("delay: %i\n", AimBot::Get().trigger_delay);
-            printf("F4 increase trigger delay\n");
-            printf("F5 aim         [%s]\n", aimtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
-            printf("F6 glow        [%s]\n", glowtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
-            printf("F7 bhop        [%s]\n", bhoptoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
-            printf("F8 radar       [%s]\n", radartoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
-            printf("F9 ~half flash [%s]\n", flashtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
-            printf("F10 unload\n");
-            shouldupdate = !shouldupdate;
-        }
+            if (shouldupdate)
+            {
+                Sleep(100);
+                system("CLS");
+                printf("M5 trigger\n");
+                printf("F1 decrease aim smooth\n");
+                printf("smooth: %i\n", AimBot::Get().mSmoothAmt);
+                printf("F2 increase aim smooth\n");
+                printf("\n");
+                printf("F3 decrease trigger delay\n");
+                printf("delay: %i\n", AimBot::Get().trigger_delay);
+                printf("F4 increase trigger delay\n");
+                printf("F5 aim        [%s]\n", aimtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+                printf("F6 glow       [%s]\n", glowtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+                printf("F7 bhop       [%s]\n", bhoptoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+                printf("F8 radar      [%s]\n", radartoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+                printf("F9 low flash  [%s]\n", flashtoggle ? "\x1B[32mtrue\033[0m" : "\x1B[31mfalse\033[0m");
+                printf("F10 exit\n");
+                shouldupdate = !shouldupdate;
+            }
 
 
-        Memory::Get().Local = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwLocalPlayer);
+            Memory::Get().Local = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwLocalPlayer);
 
-        if (Entity::Get().IsAlive(Memory::Get().Local))
-        {
-            // trigger
-            if (GetAsyncKeyState(VK_XBUTTON2))
-                AimBot::Get().Trigger();
+            if (Entity::Get().IsAlive(Memory::Get().Local))
+            {
+                // trigger
+                if (GetAsyncKeyState(VK_XBUTTON2))
+                    AimBot::Get().Trigger();
 
-            // bhop
-            if (bhoptoggle)
-                Misc::Get().Bhop();
+                // bhop
+                if (bhoptoggle)
+                    Misc::Get().Bhop();
 
-            // aimbot
-            if (GetAsyncKeyState(VK_LBUTTON) && aimtoggle)
-                AimBot::Get().Aim();
-        }
+                // aimbot
+                if (GetAsyncKeyState(VK_LBUTTON) && aimtoggle)
+                    AimBot::Get().Aim();
 
-        // antiflash
-        if (flashtoggle)
-            Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 100.f);
-        else
-            Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 255.f);
+                // fakelag
+                //Misc::Get().FakelagChoke(4);
+            }
 
-        // loop players
-        for (int i = 1; i < 32; i++)
-        {
-            DWORD Player = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwEntityList + (i * 0x10));
-            view Matrix = Memory::Get().Read<view>(Memory::Get().Client + hazedumper::signatures::dwViewMatrix);
+            // antiflash
+            if (flashtoggle)
+                Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 100.f);
+            else
+                Memory::Get().Write<float>(Memory::Get().Local + hazedumper::netvars::m_flFlashMaxAlpha, 255.f);
 
-            Vector Origin, HeadPos;
-            Vector PlayerOrigin = Memory::Get().Read<Vector>(Player + hazedumper::netvars::m_vecOrigin);
+            // loop players
+            for (int i = 1; i < 32; i++)
+            {
+                DWORD Player = Memory::Get().Read<DWORD>(Memory::Get().Client + hazedumper::signatures::dwEntityList + (i * 0x10));
+                view Matrix = Memory::Get().Read<view>(Memory::Get().Client + hazedumper::signatures::dwViewMatrix);
 
-            AimBot::Get().Init(Player);
+                Vector Origin, HeadPos;
+                Vector PlayerOrigin = Memory::Get().Read<Vector>(Player + hazedumper::netvars::m_vecOrigin);
 
-            // force radar
-            if (Entity::Get().IsEnemy(Player, Memory::Get().Local) && Entity::Get().IsAlive(Player) && radartoggle)
-                Memory::Get().Write<bool>(Player + hazedumper::netvars::m_bSpotted, true);
+                AimBot::Get().Init(Player);
 
-            // "chams" XDD
-            //Visuals::Get().Chams(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
+                // force radar
+                if (Entity::Get().IsEnemy(Player, Memory::Get().Local) && Entity::Get().IsAlive(Player) && radartoggle)
+                    Memory::Get().Write<bool>(Player + hazedumper::netvars::m_bSpotted, true);
 
-            // glow
-            if (glowtoggle)
-                Visuals::Get().Glow(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
+                // "chams" XDD
+                //Visuals::Get().Chams(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
+
+                // glow
+                if (glowtoggle)
+                    Visuals::Get().Glow(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
+            }
         }
     }
-
     FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
     return 1;
 }
