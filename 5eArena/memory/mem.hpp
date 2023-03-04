@@ -21,12 +21,6 @@ public:
 		return x;
 	}
 
-	template <class T>
-	void ReadDst(DWORD address, T& dest)
-	{
-		ReadProcessMemory(Handle, reinterpret_cast<LPCVOID>(address), &dest, sizeof(dest), NULL);
-	}
-
 	template <class val>
 	val Write(DWORD addr, val x)
 	{

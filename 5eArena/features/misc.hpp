@@ -5,6 +5,5 @@ class Misc : public Singleton <Misc>
 {
 public:
 	void Bhop();
-	void FakelagChoke(int max_choke_ticks);
 };
 
