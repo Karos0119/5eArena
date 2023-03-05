@@ -62,6 +62,7 @@ KeyAction actions[] = {
     { VK_F7, []() { bhoptoggle = !bhoptoggle; } },
     { VK_F8, []() { radartoggle = !radartoggle; } },
     { VK_F9, []() { flashtoggle = !flashtoggle; } },
+    { VK_F10, []() { fakelagtoggle = !fakelagtoggle; } },
 };
 
 DWORD WINAPI OnDllAttach(LPVOID base)
@@ -69,27 +70,27 @@ DWORD WINAPI OnDllAttach(LPVOID base)
     Utils::OpenConsole();
     Utils::ResizeConsole(320, 310);
 
-    while (!(GetAsyncKeyState(VK_F10) & 1))
+    while (!(GetAsyncKeyState(VK_F11)))
     {
         system("CLS");
         if (!Utils::GetPid("csgo.exe"))
             Utils::Print("Waiting for CS:GO");
 
-        while (!Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F10))) Sleep(100);
+        while (!Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F11))) Sleep(100);
 
         Memory::Get().Init();
 
         if (!Memory::Get().Browser)
             Utils::Print("Waiting for serverbrowser.dll");
 
-       while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_F10)))
+       while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_F11)))
        {
            Sleep(100);
            Memory::Get().Init();
        }
 
         shouldupdate = !shouldupdate;
-        while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F10)))
+        while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F11)))
         {
             for (auto& ka : actions) {
                 if (GetAsyncKeyState(ka.keyCode) & 1) {
@@ -116,7 +117,8 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                 printf("F7 bhop        [%s]\n", bool_to_color(bhoptoggle));
                 printf("F8 radar       [%s]\n", bool_to_color(radartoggle));
                 printf("F9 low flash   [%s]\n", bool_to_color(flashtoggle));
-                printf("F10 exit\n");
+                printf("F10 fakelag    [%s]\n", bool_to_color(fakelagtoggle));
+                printf("F11 exit\n");
                 shouldupdate = !shouldupdate;
             }
 
@@ -136,6 +138,12 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                 // aimbot
                 if (GetAsyncKeyState(VK_LBUTTON) && aimtoggle)
                     AimBot::Get().Aim();
+
+                // fakelag
+                if (fakelagtoggle && !(GetAsyncKeyState(VK_LBUTTON) || GetAsyncKeyState(VK_SPACE)))
+                {
+                    Misc::Get().Fakelag(10);
+                }
             }
 
             // antiflash
@@ -159,15 +167,12 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                 if (Entity::Get().IsEnemy(Player, Memory::Get().Local) && Entity::Get().IsAlive(Player) && radartoggle)
                     Memory::Get().Write<bool>(Player + hazedumper::netvars::m_bSpotted, true);
 
-                // "chams" XDD
-                //Visuals::Get().Chams(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
-
                 // glow
                 if (glowtoggle)
                     Visuals::Get().Glow(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
             }
         }
-        if (GetAsyncKeyState(VK_F10))
+        if (GetAsyncKeyState(VK_F11))
         {
             FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
             return 1;

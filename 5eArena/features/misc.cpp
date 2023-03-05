@@ -8,3 +8,16 @@ void Misc::Bhop()
 			Memory::Get().Write<DWORD>(Memory::Get().Client + hazedumper::signatures::dwForceJump, 6);
 	}
 }
+
+void Misc::Fakelag(int ticks)
+{
+	Memory::Get().Write(Memory::Get().Engine + hazedumper::signatures::dwbSendPackets, false);
+
+	int curr_choke = 999;
+	do
+	{
+		Memory::Get().ReadDst(Memory::Get().ClientState + hazedumper::signatures::clientstate_choked_commands, curr_choke);
+	} while (curr_choke < ticks);
+
+	Memory::Get().Write(Memory::Get().Engine + hazedumper::signatures::dwbSendPackets, true);
+}

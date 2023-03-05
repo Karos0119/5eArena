@@ -30,6 +30,7 @@ static bool radartoggle = false;
 static bool flashtoggle = false;
 static bool shouldupdate = false;
 static bool aimsettings = false;
+static bool fakelagtoggle = false;
 
 namespace Utils
 {

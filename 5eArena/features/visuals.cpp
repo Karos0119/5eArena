@@ -1,13 +1,6 @@
 #pragma once
 #include "visuals.hpp"
 
-void Visuals::Chams(DWORD Player, bool IsEnemy)
-{
-	Memory::Get().Write<BYTE>(Player + hazedumper::netvars::m_clrRender, IsEnemy ? 255 : 0);
-	Memory::Get().Write<BYTE>(Player + hazedumper::netvars::m_clrRender + 0x1, 0);
-	Memory::Get().Write<BYTE>(Player + hazedumper::netvars::m_clrRender + 0x2, IsEnemy ? 0 : 255);
-}
-
 struct GlowStruct {
 	BYTE base[8];
 	float R;
