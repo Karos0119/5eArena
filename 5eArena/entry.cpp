@@ -70,27 +70,27 @@ DWORD WINAPI OnDllAttach(LPVOID base)
     Utils::OpenConsole();
     Utils::ResizeConsole(320, 310);
 
-    while (!(GetAsyncKeyState(VK_F11)))
+    while (!(GetAsyncKeyState(VK_END)))
     {
         system("CLS");
         if (!Utils::GetPid("csgo.exe"))
             Utils::Print("Waiting for CS:GO");
 
-        while (!Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F11))) Sleep(100);
+        while (!Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_END))) Sleep(100);
 
         Memory::Get().Init();
 
         if (!Memory::Get().Browser)
             Utils::Print("Waiting for serverbrowser.dll");
 
-       while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_F11)))
+       while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_END)))
        {
            Sleep(100);
            Memory::Get().Init();
        }
 
         shouldupdate = !shouldupdate;
-        while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_F11)))
+        while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_END)))
         {
             for (auto& ka : actions) {
                 if (GetAsyncKeyState(ka.keyCode) & 1) {
@@ -118,7 +118,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                 printf("F8 radar       [%s]\n", bool_to_color(radartoggle));
                 printf("F9 low flash   [%s]\n", bool_to_color(flashtoggle));
                 printf("F10 fakelag    [%s]\n", bool_to_color(fakelagtoggle));
-                printf("F11 exit\n");
+                printf("END exit\n");
                 shouldupdate = !shouldupdate;
             }
 
@@ -172,7 +172,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                     Visuals::Get().Glow(Player, Entity::Get().IsEnemy(Player, Memory::Get().Local));
             }
         }
-        if (GetAsyncKeyState(VK_F11))
+        if (GetAsyncKeyState(VK_END))
         {
             FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
             return 1;
