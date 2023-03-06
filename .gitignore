@@ -40,3 +40,4 @@ Release/5eArena.pdb
 5eArena/5eArena.vcxproj.user
 5eArena/5eArena.vcxproj.user
 .vs/5eArena/FileContentIndex/26f048f0-1f07-4d73-80d9-943eee08552c.vsidx
+*.vsidx
