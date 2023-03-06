@@ -1,7 +1,5 @@
 #pragma once
 #include "aimbot.hpp"
-#include <thread>
-#include <iostream>
 
 void VectorAngles(const float* forward, float* angles)
 {
@@ -155,6 +153,6 @@ void AimBot::Trigger()
         return;
 
     mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-    Sleep(20);
+	Sleep(Utils::RandomInt(20, 40));
     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 }

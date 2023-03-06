@@ -12,6 +12,7 @@
 #include <windows.h>
 #include <cstdlib>
 #include <functional>
+#include <thread>
 
 #include "singleton.hpp"
 #include "vector.hpp"
@@ -88,6 +89,9 @@ namespace Utils
 		}
 		
 		return NULL;
+	}
+	inline int RandomInt(int lower_bound, int upper_bound) {
+		return rand() % (upper_bound - lower_bound + 1) + lower_bound;
 	}
 }
 

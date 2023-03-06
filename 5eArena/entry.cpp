@@ -142,7 +142,7 @@ DWORD WINAPI OnDllAttach(LPVOID base)
                 // fakelag
                 if (fakelagtoggle && !(GetAsyncKeyState(VK_LBUTTON) || GetAsyncKeyState(VK_SPACE)))
                 {
-                    Misc::Get().Fakelag(10);
+                    Misc::Get().Fakelag(8);
                 }
             }
 
