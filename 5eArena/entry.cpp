@@ -78,16 +78,16 @@ DWORD WINAPI OnDllAttach(LPVOID base)
 
         while (!Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_END))) Sleep(100);
 
-        Memory::Get().Init();
+        if (Utils::GetPid("csgo.exe")) {
+            Memory::Get().Init();
 
-        if (!Memory::Get().Browser)
             Utils::Print("Waiting for serverbrowser.dll");
-
-       while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_END)))
-       {
-           Sleep(100);
-           Memory::Get().Init();
-       }
+            while (!Memory::Get().Browser && !(GetAsyncKeyState(VK_END)))
+            {
+                Sleep(100);
+                Memory::Get().Init();
+            }
+        }
 
         shouldupdate = !shouldupdate;
         while (Utils::GetPid("csgo.exe") && !(GetAsyncKeyState(VK_END)))
